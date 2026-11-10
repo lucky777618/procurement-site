@@ -1,0 +1,16 @@
+# editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# python helpers
+__pycache__/
+*.pyc
+
+# logs and local notes
+*.log
+notes.local.md
+.env
+.env.*
