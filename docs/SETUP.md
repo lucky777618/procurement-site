@@ -207,6 +207,19 @@ MAIL_FROM=Lucky7Link <hello@lucky7link.com>
 > 适配器版本差异：`@astrojs/cloudflare` 新版可能要求部署到 Workers 而非 Pages。
 > `npx astro add cloudflare` 安装后会直接告诉你走哪条，按它说的做，两条都免费。
 
+### 已完成（2026-11-11，实测）
+
+| 项 | 值 |
+| --- | --- |
+| Pages 项目名 | `lucky7link`（构建命令留空，输出目录 `/`） |
+| 生产分支 | `main`，当前部署提交 `62c1973` |
+| 内部域名 | `lucky7link.pages.dev` |
+| 自定义域 | `lucky7link.com`（活动，SSL 已启用）、`www.lucky7link.com`（活动） |
+| 验证 | 两个域名均返回 200；`/services` 等干净 URL 可访问（`.html` 会 308 跳到干净 URL） |
+| 仓库授权方式 | 已安装 Cloudflare Workers and Pages GitHub App（授权范围：全部仓库，如需收紧可在 GitHub → Settings → Applications 改为仅指定仓库） |
+
+尚未做：`www` 与主域之间的 301 统一（两条都可访问，选一条做重定向即可）；Cloudflare Email Routing；表单端点。
+
 ---
 
 ## 7. Trae 侧要做的

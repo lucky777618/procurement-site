@@ -3,6 +3,9 @@
 Static marketing site for **lucky7link.com**: a sourcing, inspection and consolidation
 desk in Dongguan selling to overseas small and mid-sized importers.
 
+Live at https://lucky7link.com (Cloudflare Pages project `lucky7link`, deployed from
+`main` on every push).
+
 No build step, no framework, no runtime. Plain HTML + one CSS file + one JS file, served
 straight from Cloudflare Pages.
 
