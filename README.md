@@ -26,6 +26,14 @@ assets/img/og-cover.png
 tools/make_og.py    Regenerates the social cover if the wording changes
 ```
 
+## Docs
+
+| File | What it covers |
+| --- | --- |
+| `docs/PLAN.md` | Phase 2 design: three order channels, data model, routes, payment matrix, phased delivery |
+| `docs/SETUP.md` | Install and configure Astro + Supabase + PayPal + Cloudflare, step by step |
+| `supabase/schema.sql` | Tables, indexes and RLS policies — paste into Supabase SQL editor |
+
 ## Preview locally
 
 ```powershell

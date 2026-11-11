@@ -6,14 +6,21 @@ site without overwriting each other.
 
 ## The project in one line
 
-Plain static site for lucky7link.com — a China sourcing and consolidation service
-for overseas importers. HTML, CSS, JS. No framework, no build step, no dependencies.
+Static marketing site for lucky7link.com — a China sourcing and consolidation service
+for overseas importers. HTML, CSS, JS, no framework, no build step.
+
+**Phase 2 is approved and documented in `docs/PLAN.md`.** The site is being upgraded to
+Astro SSR + Cloudflare Pages + Supabase (accounts, orders, admin, payments). Installation
+steps live in `docs/SETUP.md`, the database schema in `supabase/schema.sql`. Until the
+migration commit lands, this directory is still the plain static site — do not start the
+migration by hand.
 
 ## Hard rules
 
-1. **No build tooling.** Do not introduce npm, bundlers, frameworks, or a `package.json`
-   unless the change is first agreed in an issue or a chat message. Pages deploys this
-   directory as-is.
+1. **No build tooling in phase 1.** Do not introduce npm, bundlers, frameworks or a
+   `package.json` while this directory is still the static site. The phase-2 stack
+   (Astro, Supabase, payment adapters) is pre-approved by `docs/PLAN.md`; anything
+   outside that stack still needs agreement first.
 2. **No external runtime dependencies.** Fonts are self-hosted in `assets/fonts/`.
    Do not add CDN scripts, analytics, pixels, or cookie banners.
 3. **Pages stay self-contained.** Each page carries its own header and footer markup —
