@@ -1,0 +1,71 @@
+---
+import Portal from '../../layouts/Portal.astro';
+
+if (!Astro.locals.user) {
+  return Astro.redirect('/login');
+}
+
+const supabase = Astro.locals.supabase;
+
+const [{ data: profile }, { data: orders, error }] = await Promise.all([
+  supabase.from('profiles').select('full_name, company, country, role').eq('id', Astro.locals.user.id).maybeSingle(),
+  supabase.from('orders').select('order_no, status, currency, total_amount, created_at').order('created_at', { ascending: false }).limit(20),
+]);
+
+const statusLabel: Record<string, string> = {
+  draft: 'Draft',
+  pending_payment: 'Waiting for payment',
+  paid: 'Paid',
+  purchasing: 'Purchasing',
+  at_warehouse: 'At warehouse',
+  consolidating: 'Consolidating',
+  shipped: 'Shipped',
+  delivered: 'Delivered',
+  closed: 'Closed',
+  cancelled: 'Cancelled',
+};
+---
+<Portal title="Portal" user={Astro.locals.user}>
+  <h1>Your orders</h1>
+  <p class="lede">
+    {profile?.company ? `${profile.company} · ` : ''}{profile?.country ? `${profile.country} · ` : ''}
+    Everything we buy, inspect and consolidate for you, with documents kept per order.
+  </p>
+
+  {error && <div class="err">{error.message}</div>}
+
+  <div class="card">
+    <h2>Orders</h2>
+    {orders && orders.length > 0 ? (
+      <table>
+        <thead>
+          <tr><th>Order</th><th>Status</th><th>Placed</th><th class="num">Total</th></tr>
+        </thead>
+        <tbody>
+          {orders.map((o: any) => (
+            <tr>
+              <td><a href={`/portal/orders/${o.order_no}`}>{o.order_no}</a></td>
+              <td>{statusLabel[o.status] ?? o.status}</td>
+              <td>{new Date(o.created_at).toISOString().slice(0, 10)}</td>
+              <td class="num">{o.currency} {Number(o.total_amount).toFixed(2)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    ) : (
+      <p>No orders yet. Send an enquiry and we will quote it — the order shows up here once we open it.</p>
+    )}
+  </div>
+
+  <p class="fine">
+    Payment methods depend on your country. Need a channel that is not shown? <a href="/contact">Write to us</a>.
+  </p>
+</Portal>
+
+<style>
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid rgba(15, 26, 28, 0.1); }
+  th { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.7; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  a { color: #a8482c; }
+</style>

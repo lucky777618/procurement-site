@@ -1,0 +1,35 @@
+---
+import Portal from '../layouts/Portal.astro';
+
+const error = Astro.url.searchParams.get('error') ?? '';
+const email = Astro.url.searchParams.get('email') ?? '';
+const company = Astro.url.searchParams.get('company') ?? '';
+const country = Astro.url.searchParams.get('country') ?? '';
+const done = Astro.url.searchParams.get('done') === '1';
+---
+<Portal title="Create account" user={Astro.locals.user}>
+  <h1>Create your account</h1>
+  <p class="lede">One account for quotes, orders and shipment tracking. We use it to keep every document for your order in one place.</p>
+
+  {done ? (
+    <div class="card">
+      <h2>Check your inbox</h2>
+      <p>We sent a confirmation link to the address you entered. Click it, then <a href="/login">sign in</a>.</p>
+    </div>
+  ) : (
+    <form method="post" action="/api/auth/signup" class="card">
+      {error && <div class="err">{error}</div>}
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" required value={email} autocomplete="email" />
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" required minlength="8" autocomplete="new-password" />
+      <label for="company">Company (optional)</label>
+      <input id="company" name="company" value={company} autocomplete="organization" />
+      <label for="country">Country (ISO code, e.g. RU)</label>
+      <input id="country" name="country" value={country} maxlength="2" autocomplete="country" />
+      <button type="submit">Create account</button>
+    </form>
+  )}
+
+  <p class="fine">Already registered? <a href="/login">Sign in</a>.</p>
+</Portal>
