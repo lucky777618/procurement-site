@@ -1,0 +1,27 @@
+---
+// 临时诊断页：只在排查期存在，定位完就删。
+export const prerender = false;
+
+const out: Record<string, unknown> = {};
+try {
+  const rt = (Astro.locals as any)?.runtime;
+  out.hasRuntime = !!rt;
+  out.runtimeKeys = rt ? Object.keys(rt).join(',') : null;
+  out.envKeys = rt?.env ? Object.keys(rt.env).join(',') : null;
+  out.cookieCount = Astro.cookies.getAll().length;
+  out.setupError = (Astro.locals as any).setupError ?? null;
+  out.hasClient = !!Astro.locals.supabase;
+  if (Astro.locals.supabase) {
+    const { data, error } = await Astro.locals.supabase.auth.getUser();
+    out.gotUser = !!data?.user;
+    out.authError = error ? error.message : null;
+  }
+} catch (e: any) {
+  out.error = String(e?.message ?? e);
+  out.stackTop = String(e?.stack ?? '').split('\n').slice(0, 4).join(' | ');
+}
+
+return new Response(JSON.stringify(out, null, 2), {
+  headers: { 'content-type': 'application/json; charset=utf-8' },
+});
+---
