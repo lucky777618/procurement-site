@@ -1,4 +1,4 @@
-import { createServerClient } from '@supabase/ssr';
+import { createServerClient, parseCookieHeader } from '@supabase/ssr';
 import type { AstroCookies } from 'astro';
 
 type AnyLocals = { runtime?: { env?: Record<string, string | undefined> } } & Record<string, unknown>;
@@ -14,16 +14,22 @@ function readEnv(locals: AnyLocals | undefined) {
 }
 
 /**
- * 服务端 Supabase 客户端：把登录态存在 httpOnly cookie 里。
+ * 服务端 Supabase 客户端：登录态存在 cookie 里。
  * 用的是 publishable / anon key，权限完全由 RLS 决定——服务端没有绕过 RLS 的密钥。
+ *
+ * 读 cookie 走 request headers（Astro 的 cookies 没有 getAll），写 cookie 走 AstroCookies，
+ * 这样 Set-Cookie 才会被框架带到响应里。
  */
-export function createSupabaseServerClient(cookies: AstroCookies, locals?: AnyLocals) {
+export function createSupabaseServerClient(cookies: AstroCookies, requestHeaders: Headers, locals?: AnyLocals) {
   const { url, key } = readEnv(locals);
 
   return createServerClient(url, key, {
     cookies: {
       getAll() {
-        return cookies.getAll().map((c) => ({ name: c.name, value: c.value }));
+        return parseCookieHeader(requestHeaders.get('cookie') ?? '').map((c) => ({
+          name: c.name ?? '',
+          value: c.value ?? '',
+        }));
       },
       setAll(list) {
         for (const { name, value, options } of list) {

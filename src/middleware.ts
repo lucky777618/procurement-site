@@ -6,7 +6,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
   let setupError: Error | null = null;
 
   try {
-    context.locals.supabase = createSupabaseServerClient(context.cookies, context.locals);
+    context.locals.supabase = createSupabaseServerClient(context.cookies, context.request.headers, context.locals);
     const { data } = await context.locals.supabase.auth.getUser();
     context.locals.user = data?.user ? { id: data.user.id, email: data.user.email ?? undefined } : null;
   } catch (e) {
