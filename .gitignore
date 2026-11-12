@@ -20,3 +20,5 @@ notes.local.md
 node_modules/
 dist/
 .astro/
+.wrangler/
+.dev.vars
